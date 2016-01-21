@@ -1,0 +1,14 @@
+block js
+    script.
+        function openQrCodes() {
+            window.open('/qrcodes/!{item._id}');
+        }
+        
+
+.field(class='type-' + field.type, data-field-type=field.type, data-field-path=field.path, data-field-collapse=field.collapse ? 'true' : false, data-field-depends-on=field.dependsOn, data-field-noedit=field.noedit ? 'true' : 'false')
+    label.field-label= field.label
+    - var value = field.format(item)
+    .field-ui(class='width-' + field.width)
+        button(type='button', onclick="openQrCodes()").btn.btn-default= i18n.t("qrcodes.GENERATE_QR_CODES")
+        if field.note
+            .field-note!= field.note

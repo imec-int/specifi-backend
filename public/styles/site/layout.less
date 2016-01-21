@@ -1,0 +1,321 @@
+#header {
+	margin-top: 30px;
+}
+
+#footer {
+	margin-top: 30px;
+	padding-top: 30px;
+	color: @gray-light;
+}
+
+#qrcodes {
+  width: 100%;
+  display: inline-block;
+}
+
+.qrcode {
+  margin: 20px;
+  display: inline-block;
+}
+
+.qrcode .titleChallenge {
+  text-align: center;
+  font-weight: bold;
+}
+
+.qrcode .titleWP {
+  text-align: center;
+}
+
+.qrcode .titlePersonalMarkerQR {
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
+}
+
+.qrcode {
+  img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.logo {
+  width: auto;
+  height: 50px;
+  padding-right: 10px;
+}
+
+.form-horizontal .form-group label {
+  padding-top: 6px;
+}
+
+.intro {
+  margin-top: 50px;
+}
+
+.logo-header {
+  width: auto;
+  height: 100px;
+}
+
+.logo-header-text {
+  width: auto;
+  height: 70px;
+}
+
+.countdown-title {
+  padding-top: 20px;
+  padding-bottom: 30px;
+  color: white;
+  text-shadow: 1px 1px 1px #454545;
+}
+
+.background-html {
+  background: url(../../images/alone_again.png) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.transparent-body {
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .vertical-center:before {
+    display: none;
+  }
+}
+
+//Navbar
+
+.badge-logo {
+  width: 150px;
+  height: auto;
+}
+
+.navbar-nav > li > a {
+  color: @navbar-default-link-color;
+  text-shadow: 1px 1px 1px #454545;
+  border-radius: 10px;
+  &:hover {
+    color: @navbar-default-link-color;
+    background-color: @CustomColor3Light;
+    text-shadow: 1px 1px 1px #454545;
+  }
+}
+
+.navbar-nav > li > a > .fa {
+  padding-right: 5px;
+}
+
+.navbar-toggle > .icon-bar {
+  background-color: @navbar-default-toggle-icon-bar-bg;
+  border: 2px solid #fff;
+}
+
+.navbar-nav > li {
+  &.active {
+    border-radius: 10px;
+    background-color: @CustomColor3;
+  }
+}
+
+
+//Player Marker page
+.marker-field {
+  color: #fff;
+  text-shadow: 1px 1px 1px #454545;
+}
+
+.video {
+  width: auto;
+  height: 240px;
+}
+
+.btn-playermarker {
+  margin-right: 10px;
+}
+
+
+//Signin
+
+.background-html-signin {
+  background: url(../../images/knock-knock.png) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.auth-body {
+  background-color: rgba(255, 255, 255, 0.65);
+  -webkit-box-shadow: 1px 1px 1px 1px #454545;
+  box-shadow: 1px 1px 1px 1px #454545;
+  border-radius: @border-radius-small;
+  border: 1px solid darken(@body-bg, 6.5%);
+  border-bottom-color: darken(@body-bg, 11.5%);
+  margin-bottom: 2em;
+  padding: @gutter-width;
+}
+
+.flash-container {
+  width: 100%;
+}
+
+.auth-box-logo > img {
+  height: 182px;
+  width: auto;
+}
+
+.auth-title {
+  font-size: 16pt;
+}
+
+.forgot-link {
+  margin-left: 10px;
+  text-align: center;
+}
+
+//Highscores
+
+
+.title-highscores {
+  font-size: 20pt;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px #454545;
+}
+
+.highscores-buttons.dropdown {
+  margin-top: 10px;
+  color: #ffffff;
+  
+  .dropdown-toggle {
+    background-color: @CustomColor1;
+  }
+  
+  .dropdown-menu {
+    li > a:hover {
+      background-color: @CustomColor1Lighter;
+    }
+    
+    li.active > a {
+      background-color: @CustomColor1Light;
+    }
+  }
+  
+  .caret {
+    margin-left: 5px;
+  }
+}
+
+
+.highscore {
+  height: 50px;
+  vertical-align: middle;
+  width: 100%;
+  font-size: 16pt;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  color: #ffffff;
+  background-color: rgba(215, 23, 0, 0.50);
+  
+  border-width: 1px;
+  border-color: #000000;
+
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+
+  -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.2);
+
+  
+  
+  .user {
+    //height: 30px;
+    padding-left: 10px;
+    vertical-align: middle;
+
+    .position {
+      height: 30px;
+      width: 40px;
+      padding-left: 10px;
+      padding-right: 10px;
+      display: inline-block;
+    }
+    
+    .username {
+      height: 30px;
+      margin-left: 5px;
+      display: inline-block;
+    }
+
+    .avatar {
+      margin-left: 10px;
+      width:30px;
+      height: 30px;
+      border-radius: 15px;
+      background-color: #ffff00;
+      display: inline-block;
+      
+      
+      .circle {
+        position: relative;
+        width: 36px;
+        height: 36px;
+        top: 0;
+        left: -3px;
+        clip-path: circle(15px at 18px 15px);
+        -webkit-clip-path: circle(15px at 18px 15px);
+      }
+    }
+  }
+  
+  .points {
+    position: absolute;
+    display: table-cell;
+    vertical-align: middle;
+    right: 0px;
+    top: -5px;
+    width:40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: @CustomColor4;
+    margin-left: auto;
+    margin-right: 15px;
+    
+    .score {
+      position: relative;
+      top: 5px;
+      text-align: center;
+    }
+  }
+}
+
+.highscore.my-score {
+  background-color: rgba(215, 23, 0, 1);
+}
+
+.highscores-area .row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.highscores-buttons .btn-group {
+  width: 100%;
+}
+
+.highscores-area {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.no-highscores {
+  color: #ffffff;
+  text-shadow: 1px 1px 1px #454545;
+}

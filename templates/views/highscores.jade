@@ -1,0 +1,23 @@
+extends ../layouts/default
+
+include ../mixins/highscore-field
+
+block content
+    .container.highscores
+        .title-highscores= t("highscores.HIGHSCORES_TITLE")
+        .highscores-buttons.dropdown
+            button(type="button",id="dropdownMenu",data-toggle="dropdown").btn.dropdown-toggle
+                =dropdownLabel
+                span.caret
+            ul(role="menu" aria-labelledby="dropdownMenu").dropdown-menu
+                each link in links
+                    li(role="presentation", class=(subsection == link.key ? 'active' : null))
+                        a(href=link.href, tabindex="-1")
+                            =link.label
+                
+        .highscores-area
+            if highscores
+                each score in highscores
+                    +highscore-field(score)
+            else
+                h3.no-highscores= t("highscores.NO_HIGHSCORES", {appName:t("APP_NAME")})

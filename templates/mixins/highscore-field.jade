@@ -1,0 +1,18 @@
+mixin highscore-field(score)
+    .row.highscore(class=(user ? (user.id === score.user.id ? 'my-score' : ''):''))
+        .col-xs-10.user
+            .position #{score.position}.
+            .avatar
+                if score.user && score.user.photo && score.user.photo.url
+                    img(src=score.user.photo.url).circle
+                else
+                    img(src="/images/user.png").circle
+            .username
+                if score.user
+                    =score.user.username
+                else
+                    =t("highscores.UNKNOWN")
+        .col-xs-2
+            .points 
+                .score #{score.totalScore}
+        

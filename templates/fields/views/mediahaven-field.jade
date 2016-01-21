@@ -1,0 +1,7 @@
+include ../../../public/components/jade-field-mixins/fields/upload
+
+mixin mediahaven-field(args)
+    .form-group
+        label(for=attributes.id ? attributes.id : null).col-sm-3!= args.label
+        .col-sm-9
+            +upload(args)(id=attributes.id,class=attributes.class)

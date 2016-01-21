@@ -1,0 +1,53 @@
+extends ../layouts/default
+
+include ../../public/components/jade-field-mixins/fields/labelled-field
+include ../../public/components/jade-field-mixins/fields/labelled-textarea
+include ../../public/components/jade-field-mixins/fields/labelled-button
+include ../fields/views/location-field
+include ../fields/views/print-qr-btn
+
+block js
+    script.
+        function openQR() {
+            window.open('/mymarker/qr/!{userId}');
+        }
+        
+        $(document).ready(function(){
+            $("#nameLbl").tooltip({
+                title: !{JSON.stringify(titleExplanation)},
+                placement: 'bottom'
+            });
+        
+            $("#locationLbl").tooltip({
+                title: !{JSON.stringify(locationExplanation)},
+                placement: 'bottom'
+            });
+            
+            $("#qrBtn").tooltip({
+                title: !{JSON.stringify(printExplanation)},
+                placement: 'right'
+            });
+        
+        });
+block content
+    .container
+        h3.marker-field= t("personalmarker.MY_PLAYER_MARKER")
+        form(method="post", enctype="multipart/form-data", novalidate).form-horizontal
+            input(type='hidden', name='action', value='edit')
+            .form-group
+                .col-sm-3
+                    label(for='nameInput', id='nameLbl').marker-field= t("personalmarker.TITLE")
+                .col-sm-9
+                    input(id='nameInput', 
+                    name='name', 
+                    value=(item)?item.name:user.username+"'s marker", 
+                    type='text').form-control
+            .form-group
+                .col-sm-3
+                    label(id='locationLbl', for='address').marker-field= t("personalmarker.LOCATION")
+                .col-sm-9
+                    +location-field({name:'location',value: (item)?item.location:null})
+            .form-group
+                .col-sm-9.col-sm-offset-3
+                    button(type="submit").btn.btn-primary.btn-playermarker= t("personalmarker.SAVE")
+                    button(type="button", disabled=(item)?(item.location)?false:true:true, onclick='openQR(); return false;', id='qrBtn').btn.btn-primary.btn-playermarker= t("personalmarker.PRINT")

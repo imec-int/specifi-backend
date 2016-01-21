@@ -1,0 +1,66 @@
+- var hasFile = item.get(field.paths.exists)
+.field.type-localfile.mediahavenfile(data-field-type=field.type, data-field-path=field.path, data-field-collapse=field.collapse ? 'true' : false, data-field-depends-on=field.dependsOn, data-field-noedit=field.noedit ? 'true' : 'false', data-field-value=hasFile ? 'true' : 'false')
+    label.field-label= field.label
+    input(type='file', name=field.paths.upload).field-upload
+    input(type='hidden', name=field.paths.action, value='').field-action
+    .field-ui(class=hasFile ? 'has-file' : false)
+        .file-container
+            .file-details
+                if hasFile
+                    .file-values
+                        div.field-value(id=item.get(field.paths.mediaObjectId))= item.get(field.paths.url)
+                .upload-queued.pull-left
+                    .alert.alert-success!= i18n.t("mediahaven.FILE_SELECTED",{html:"<span class='file-name'></span>"})
+                .delete-queued.pull-left
+                    .alert.alert-danger
+        .file-toolbar
+            div.pull-left
+                a(href=js, disabled=field.noedit).btn.btn-default.btn-upload-file=i18n.t("mediahaven.FILE",{action:(hasFile ? i18n.t("mediahaven.CHANGE") : i18n.t("mediahaven.UPLOAD"))})
+                a(href=js, data-alt-text=i18n.t("mediahaven.CANCEL_UPLOAD"), style='display: none;').btn.btn-link.btn-cancel.btn-cancel-file= i18n.t("mediahaven.CANCEL_UPLOAD")
+        if field.note
+            .col-md-10: .field-note!= field.note
+
+block js
+    script(src='/js/common/ui-mediahavenfile.js')
+    script.
+
+        function addLoadEvent(func) {
+            var oldonload = window.onload;
+            if (typeof window.onload != 'function') {
+                window.onload = func;
+            } else {
+                window.onload = function () {
+                    if (oldonload) {
+                        oldonload();
+                    }
+                    func();
+                }
+            }
+        }
+
+        addLoadEvent(loadUrl);
+        
+        function loadUrl() {
+            var objectId = "#{item.get(field.paths.mediaObjectId)}";
+            if(objectId && objectId !== "") {
+                var options = {
+                    url: '/api/media/'+objectId,
+                    type:"GET",
+                    timeout: 10000,
+                    success: function (data, status) {
+                        if(data){
+                            if(data.video)
+                                $('#'+objectId).wrapInner("<a href='"+data.video+"' target='_blank'></a>");
+                            else if(data.image)
+                                $('#'+objectId).wrapInner("<a href='"+data.image+"' target='_blank'></a>");
+                        }
+                    },
+                    error: function (err) {
+                        alert(JSON.stringify(err));
+                    }
+                };
+                $.ajax(options);
+            }
+
+        }
+        

@@ -1,0 +1,428 @@
+{
+    "APP_NAME": "Playground",
+    "HEY": "Hey __username__",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "CHANGE_PASSWORD": "Change password",
+    "GAME_START_DATE": "April 1, 2015",
+    "OPEN_ADMIN_PANEL": "Open Admin Panel",
+    "COUNTDOWN_TITLE": "Open up, game on! __appName__ will start on __date__, download the app on:",
+
+    "NAME": "Name",
+    "VALUE": "Value",
+    "DESCRIPTION": "Description",
+    "LOCATION": "Location",
+    "IMAGE": "Image",
+    "START_DATE":"Start date",
+    "START_DATETIME":"Start date and time",
+    "END_DATE":"End date",
+    "END_DATETIME":"End date and time",
+    "MESSAGE":"Message",
+    
+    "SCORE": "Score",
+    "STATUS": "Status",
+    "DISABLED": "Disabled",
+    "ACTIVE": "Active",
+    
+    "USER": "User",
+    "USER_plural": "Users",
+    "CHALLENGE": "Challenge",
+    "CHALLENGE_plural": "Challenges",
+    "WAYPOINT": "Waypoint",
+    "WAYPOINT_plural": "Waypoints",
+    "USERCHALLENGE": "Userchallenge",
+    "USERCHALLENGE_plural": "Userchallenges",
+    "EXPERIENCE": "Experience",
+    "EXPERIENCE_plural": "Experiences",
+    "MEETING_HOTSPOT": "Meeting Hotspot",
+    "MEETING_HOTSPOT_plural": "Meeting Hotspots",
+    "PLAYER": "Player",
+    "PLAYER_plural": "Players",
+    "PERSONAL_MARKER": "Personal Marker",
+    "PERSONAL_MARKER_plural": "Personal Markers",
+    
+    "MY_CHALLENGES": "My Challenges",
+    "MY_TOKENS": "My Tokens",
+    "MY_EXPERIENCES": "My Experiences",
+    
+    "qrcodes": {
+        "QR_CODES_TITLE": "__appName__ QR Codes",
+        "PRINT_QR_BUTTON": "Print QR Code",
+        "GENERATE_QR_CODES": "Generate QR codes"
+    },
+    
+    "user": {
+        "USERNAME": "Nickname",
+        "BIRTHYEAR": "Birthyear",
+        "GENDER": "Gender",
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "PHOTO": "Photo",
+        "PERMISSIONS": "Permissions",
+        "ADMIN": "Administrator",
+        "UNSUBSCRIBED": "Unsubscribed",
+        "CHALLENGES": "Challenges playing/completed",
+        "SCANS": "Personal Markers scanned",
+        "TICKETS_BOUGHT": "Experience tickets bought"
+    },
+    
+    "ugc": {
+        "UGC": "User Generated Content",
+        "UGC_plural": "User Generated Content",
+        "CONTENT":"Content",
+        "CONTENT_CREATOR":"Content creator",
+        "RATER":"Rater",
+        "CONTENT_TEXT": "Content text",
+        "CREATED_BY": "UGC created by __username__"
+    },
+    
+    "actionlog": {
+        "ACTION": "Action",
+        "ACTION_TYPE": "Action type"
+    },
+    
+    "experience": {
+        "DETAILS": "Details",
+        "OFFERED_BY": "Offered by",
+        "TICKET": "Ticket",
+        "TICKET_plural": "Tickets",
+        "NUMBER_OF_TICKETS": "Number of tickets",
+        "COST": "Cost in tokens",
+        "OFFER_IN_STORE":"Offer in the experience store?",
+        "TICKETS_SOLD":"Tickets sold",
+        "USED":"Used",
+        "USED_DATE":"USed date"
+    },
+    
+    "challenges": {
+        "CHALLENGE_SETTINGS": "Challenge settings",
+        "TOKENS_TO_EARN": "Tokens to earn",
+        "EXPECTED_DURATION": "Expected duration (in minutes)", 
+        "REPEATABLE": "Make the challenge repeatable",
+        "CREATOR": "Creator",
+        "CREATED_BY": "Created by",
+        "CREATED_BY_ORG": "Created by organisation",
+        "CREDITS": "Credits",
+        "WAYPOINT": "Waypoint __number__",
+        "EXTRA_DIFFICULTY_SETTINGS": "Extra difficulty settings",
+        "ADD_BONUS": "Add extra difficulty bonus",
+        "TIME_LIMIT": "Time limit (in minutes)",
+        "EXTRA_TOKENS_TO_EARN": "Extra tokens to earn",
+        "QR_CODES": "QR Codes",
+        "BEING_PLAYED_BY": "Being played by",
+        "UGC_UPLOADED_BY": "User Generated Content uploaded",
+        "WAYPOINTS_NOT_POPULATED": "Waypoints not populated!"
+    },
+    
+    "waypoints": {
+        "MYSTERY_PERSON": "Mystery Person",
+        "MARKER": "Marker",
+        "LOCATION_HIDDEN": "Location hidden",
+        "TYPE": "Type",
+        "UGC_REQUIREMENTS":"User Generated Content Requirements",
+        "TYPE_OF_CONTENT_REQUIRED":"Type of Content required",
+        "UGC_DESCRIPTION":"User Generated Content Description",
+        "UGC_DESCRIPTION_NOTE":"This describes what the player needs to upload.",
+        "CONDITIONS":"Conditions",
+        "ADD_CONDITIONS":"Add conditions",
+        "DAYS_OF_THE_WEEK":"Days of the week",
+        "DAYS_OF_THE_WEEK_NOTE":"Just type the name of the days, chain with semicolons. You can add time conditions after each day with parentheses, chain with comma's. (ex.: monday;friday(02:00-14:00);saturday(08:00-12:00,14:00-18:00)",
+        "CONTENT":"Content",
+        "CONTENT_IMAGE":"Content Image",
+        "CONTENT_AUDIO":"Content Audio",
+        "CONTENT_VIDEO":"Content Video",
+        "HINT":"Hint",
+        "HINT_TEXT":"Hint text",
+        "HINT_IMAGE":"Hint Image",
+        "BEACONS":"Beacons",
+        "BEACON_ENABLED":"Add a beacon to complete the waypoint",
+        "BEACON_UUID":"Beacon UUID",
+        "BEACON_MAJOR":"Major",
+        "BEACON_MINOR":"Minor",
+        "BEACON_PROXIMITY":"Required Proximity",
+        "BEACON_PROXIMITY_ADVICE":"How close does the player have to be to scan the beacon? (Calculating range to beacons can be quite inaccurate)",
+        "BEACON_FAR":"Far (3m-70m)",
+        "BEACON_NEAR":"Near (0.5m-3m)",
+        "BEACON_IMMEDIATE":"Immediate (0m-0.5m)",
+        "BEACON_ADVICE": "If you use a beacon, always place a QR code beside it for older devices without Bluetooth LE.",
+        "VALIDITY":"Validity",
+        "VALID_WAYPOINT":"Valid waypoint"
+    },
+    
+    "userchallenge": {
+        "EXTRA_DIFFICULTY":"Extra difficulty selected",
+        "COMPLETE":"Completed",
+        "HINTS_USED":"Hints used",
+        "COMPLETED_WAYPOINTS":"Completed waypoints",
+        "PLAYED_BY":"__challenge__ played by __username__"
+    },
+    
+    "personalmarker":{
+        "MY_PLAYER_MARKER": "My Player Marker",
+        "PERSONALMARKER_TITLE": "Make your own Marker",
+        "TITLE": "Your marker's name",
+        "PERSONAL_MARKER_QR_TITLE": "__appName__ Player Marker QR Code",
+        "FLAGGED_INAPPROPRIATE": "Flagged Inappropriate",
+        "SCANNER": "Scanner",
+        "LOCATION": "Location",
+        "SAVE": "Save your Player Marker",
+        "PRINT": "Print QR code",
+        "TITLE_EXPLANATION": "This will be your Player Marker's name and what other players will see in their list of scannable markers.",
+        "LOCATION_EXPLANATION": "Where will you hang your Player Marker? Enter an address or click on the map. Don't forget to print your Player Marker and hang it in the right spot!",
+        "PRINT_EXPLANATION": "Click here to print your own Player Marker and hang it in the right spot!",
+        "SAVE_SUCCESS": "Your Player Marker is successfully saved."
+    },
+    
+    "meetinghotspot": {
+        "TEMPLATE":"Meeting Hotspot template",
+        "PLAYERS":"Players participating",
+        "BONUS_QR_CODE": "Bonus QR Code",
+        "ADD_BONUS_QR_CODE": "Add Bonus QR Code",
+        "BONUS":"Bonus",
+        "BONUS_POINTS":"Bonus points",
+        "SUPERBONUS_QR_CODE":"Super Bonus QR Code",
+        "ADD_SUPERBONUS_QR_CODE":"Add Super Bonus QR Code",
+        "SUPERBONUS":"Super Bonus",
+        "SUPERBONUS_POINTS":"Super Bonus points",
+        "DURATION": "Duration (in minutes)",
+        "RUN_AT_FIXED_DATE": "Run at fixed datetime"
+    },
+    
+    "scan": {
+        "TYPE": "Type",
+        "SCANNED": "Scanned ID",
+        "SCANNER": "Scanner",
+        "SCORE": "Score"
+    },
+    
+    "unsubscribe":{
+        "UNSUBSCRIBE_TITLE": "Unsubscribe from __appName__ emails",
+        "UNSUBSCRIBE_SUBTITLE": "Unsubscribe",
+        "UNSUBSCRIBE_LINK": "Unsubscribe me from emails now.",
+        "UNSUBSCRIBE_SUCCESS": "Success! You will no longer receive emails from __appName__. (except reset password mails and experience tickets)",
+        "UNSUBSCRIBE_ERROR": "There was an error while unsubscribing. Try again!",
+        "WRONG_ACCOUNT_ERROR": "Wrong user account. Log in with the correct email."
+    },
+    
+    
+    "signin": {
+        "SIGN_IN_TITLE": "Sign in to __appName__",
+        "SIGN_IN": "Sign in",
+        "FORGOT_PASSWORD": "Forgot password?",
+        "ALREADY_LOGGED_IN": "You're already logged in.",
+        "LOG_OUT": "Log out"
+    },
+  
+    "resetpassword":{
+        "TEMP_LOGIN": "We have temporarily logged you in. Please change your password now."
+    },
+    
+    "forgotpassword":{
+        "FORGOT_PASSWORD_TITLE": "Forgot password",
+        "EMAIL_PASSWORD_RESET_LINK": "Email me a password reset link",
+        "PASSWORD_RESET_EMAIL_SUCCESS": "We send you a password reset link. Please follow the instructions in the email. Can't find it? Check your spam folder."
+    },
+    
+    "changepassword": {
+        "TITLE": "Change password",
+        "NEW_PASSWORD": "New password",
+        "REPEAT_NEW_PASSWORD": "Repeat new password",
+        "CONFIRM": "Confirm password change",
+        "SUCCESS": "Your password is changed. You can now sign in with your new password on the website and mobile app."
+    },
+    
+    "highscores": {
+        "HIGHSCORES_TITLE": "Highscores",
+        "HIGHSCORES": "Highscores",
+        "WEEKLY_HIGHSCORES": "Weekly highscores",
+        "MY_HIGHSCORE": "My highscore",
+        "NO_HIGHSCORES": "No highscores found. Play __appName__ and check your score and position here!",
+        "UNKNOWN": "Unknown"
+    },
+    
+    "emails": {
+        "WELCOME_EMAIL_SUBJECT": "Welcome to __appName__!",
+        "TICKET_SOLD_EMAIL_SUBJECT": "Somebody bought tickets for an experience!",
+        "TICKET_BOUGHT_EMAIL_SUBJECT": "You ordered a ticket for a __appName__ experience!",
+        "CREATE_PLAYER_MARKER_EMAIL_SUBJECT": "Create your own Player Marker!",
+        "APP_UPDATE_EMAIL_SUBJECT": "__appName__ update news!",
+        "RESET_PASSWORD_EMAIL_SUBJECT": "Reset your __appName__ password!",
+        "EXTRA_TOKENS_EMAIL_SUBJECT": "Extra tokens!",
+        "FINAL_WEEK_EMAIL_SUBJECT": "Final week of __appName__!",
+        "HELLO": "Hello __username__,",
+        "TEAM": "The __appName__ team",
+        "SUGGESTIONS_SUBJECT": "App bugs/suggestions",
+        "UNSUBSCRIBE_DESCRIPTION":"Don't want to receive any more mails from __appName__? Click <a href='__unsubscribeLink__}'>here</a> to unsubscribe.",
+        "WELCOME_MAIL": [
+            "<p>Thanks for registering for __appName__!</p>", 
+            "<br>", 
+            "<p>We need you to make this month of playtesting a success. Playing this game will earn ",
+            "you tokens which you can exchange for unique <b>__experiences__</b>. We already have ",
+            "several <b>__challenges__</b> planned out for you with which you can earn tokens.</p>",
+            "<p>What follows next is a short explanation of the game mechanics:</p>",
+            "<p>The application works with two common technologies, GPS and QR codes, but you will also regularly need your camera.",
+            "We also have support for iBeacons.",
+            "When you open the app, you can find a button in the top left of the screen which opens the menu.",
+            "In the menu you will find:</p><br>",
+            "<ul>",
+            "<li>a scanning view where you can scan __appName__ <b>QR codes</b> you find in the city, free from Challenges;</li>",
+            "<li>an overview of all <b>__challenges__</b>. You can find __challenges__ on the map or scroll through them in a list view;</li>",
+            "<li>an overview of all __challenges__ you are playing under <b>__mychallenges__</b>;</li>",
+            "<li>an overview of your earned tokens <b>__mytokens__</b>;</li>",
+            "<li>an overview of all <b>__experiences__</b> and their cost;</li>",
+            "<li>the unique experiences you already collected tickets for under <b>__myexperiences__</b>.</li>",
+            "</u><br>",
+            "<p>__appName__ is a pilot project! Bugs are quite possible. ",
+            "We are very excited to hear about your experiences with the game. If you encounter technical problems or",
+            " have any suggestions, please contact us at <a href='mailto:__email__?subject=__supportSubject__'>__email__</a>!",
+            "</p><br>",
+            "<p>We hope you have a lot of fun discovering your city.</p>",
+            "<p><b>Open up, game on!</b></p><br><br>"
+        ]
+    },
+    
+    "location": {
+      "PLACEHOLDER": "Enter an address..."
+    },
+    
+    "mediahaven": {
+      "FILE_SELECTED": "File __html__ selected - save to upload",
+      "FILE": "__action__ file",
+      "CHANGE": "Change",
+      "UPLOAD": "Upload",
+      "CANCEL_UPLOAD": "Cancel upload"
+    },
+    
+    "error": {
+        "COULD_NOT_LOG_IN": "Sorry, we couldn't log you in. Request a new reset link please.",
+        "RESET_PASSWORD": "Sorry, there was an error resetting your password. Please try again.",
+        "RESET_LINK_EXPIRED": "Sorry, your reset password link has expired. Request a new link if required.",
+        "INCORRECT_EMAIL_ERROR": "Enter a correct email address!",
+        "ENTER_EMAIL_AND_PASSWORD": "Enter both your password and your email address!",
+        "INCORRECT_PASSWORD": "Incorrect password! Try again.",
+        "NO_USER_FOR_EMAIL": "We couldn't find an account for that email address!",
+        "NOT_SIGNED_IN_HIGHSCORES": "You have sign in to view your highscores.",
+        "ERROR_SENDING_RESET_PASSWORD_EMAIL": "There was an error while sending the reset password email. Try again!",
+        "PASSWORDS_MISMATCH": "Passwords have to match.",
+        "CANT_EDIT_CHALLENGE": "You can't edit a Challenge that is being played right now!",
+        "EXTRA_DIFFICULTY_REQUIRED_FIELDS": "If you want to add an (optional) extra level of difficulty, you need to set a timelimit and bonus points.",
+        "MAX_WAYPOINTS": "Maximum of five waypoints!",
+        "MIN_WAYPOINTS": "You need at least one waypoint before making the challenge active!",
+        "UNIQUE_WAYPOINT": "You can only use each waypoint once per challenge!",
+        "DELETE_ACTIVE_CHALLENGE": "You can't remove a challenge once it's been activated!",
+        "DELETE_PLAYING_CHALLENGE": "You can't remove a challenge that's in use by a player!",
+        "BEACON_UUID_MISSING": "If you enable beacons, you should provide a beacon UUID!",
+        "BEACON_UUID_MAJOR": "If you fill in the major, you have to provide the UUID as well!",
+        "BEACON_UUID_MINOR": "If you fill in the minor, you have to provide the UUID as well!",
+        "BEACON_MAJOR_MINOR": "If you fill in the minor, you have to provide the major as well!",
+        "UGC_TYPE_DESC_REQUIRED": "You need to set a required User Generated Content type and description!",
+        "DELETE_LINKED_WAYPOINT": "You can't delete waypoints linked to Challenges!",
+        "START_DATE_REQUIRED": "You have to set a start date!",
+        "UNSUPPORTED_FILE_TYPE": "Unsupported File Type: __fileType__! Only the following file types are allowed: __allowedTypes__",
+        "LOG_IN_TO_EDIT_MARKER":"You have to be logged in to edit your Player Marker."
+    },
+
+    "1000": "Database error!",
+    "1010": "You have to be logged in for that!",
+    "1020": "Missing fields!",
+    "1040": "Can't retrieve the game settings!",
+    "1050": "Can't save your player marker!",
+
+    "1001": "You must provide a username, email address and password!",
+    "1002": "We already have a user for that email!",
+    "1003": "Error creating user!",
+    "1004": "No account found!",
+    "1005": "Couldn't log you in!",
+    "1006": "Old password does not match!",
+    "1007": "Username is not unique!",
+    "1008": "Username must be between 5 and 12 characters long!",
+    "1009": "Photo upload failed!",
+    "1011": "Duplicate file on MediaHaven!",
+    "1012": "Password can not be empty!",
+    "1013": "Password has to be more than 5 characters!",
+    "1014": "Can't change user info!",
+    "1015": "Empty form!",
+    "1016": "You can't change those fields!",
+    "1017": "Could not send you a reset password email!",
+    "1018": "Could not reset password!",
+    "1019": "Could not unsubscribe you!",
+
+
+    "1021": "Challenge not found!",
+    "1022": "Challenge already started!",
+    "1023": "Challenge already stopped!",
+    "1024": "Challenge already completed!",
+    "1025": "You're not playing this challenge!",
+    "1026": "Not a valid location!",
+    "1027": "That's not the next waypoint to complete!",
+    "1028": "You don't have enough tokens to buy a hint!",
+    "1029": "Hint already used!",
+    "1030": "Challenge can not be played more than once!",
+    "1034": "Challenge is not active!",
+
+    "1031": "Waypoint not found!",
+    "1032": "Waypoint already completed!",
+    "1033": "Waypoint is not part of the challenge!",
+
+    "1041": "User generated content not found!",
+    "1042": "You have to upload a file to complete the waypoint!",
+    "1043": "That's not the right type of content!",
+    "1044": "Can't rate this content!",
+    "1045": "Can't rate your own content!",
+    "1046": "Can't rate the same content twice!",
+
+    "1051": "Couldn't retrieve personal markers!",
+    "1052": "Couldn't find that personal marker!",
+    "1053": "You're not allowed to flag a personal marker as inappropriate!",
+    "1054": "You can't scan the personal marker again before the cooldown runs out.",
+    "1055": "Couldn't add points for scanning the personal marker.",
+    "1056": "You can't scan your own personal marker.",
+    "1057": "Can't retrieve your scanned personal markers.",
+    "1058": "We can't determine your location!",
+    "1059": "You are too far from the real location of the personal marker to scan it!",
+
+    "1061": "Couldn't retrieve meeting hotspots!",
+    "1062": "Couldn't find that meeting hotspot!",
+    "1063": "Meeting hotspot is no longer active!",
+    "1064": "You are not close enough to the meeting hotspot!",
+    "1065": "You are already participating in this meeting hotspot!",
+    "1066": "Your exact location couldn't be established!",
+    "1067": "Invalid QR code!",
+    "1068": "Couldn't assign points for your scan!",
+    "1069": "You're not participating in this meeting hotspot!",
+    "1070": "Scanned player is not participating in this meeting hotspot!",
+    "1071": "Couldn't assign points for scanning!",
+    "1072": "You have already scanned each other at this meeting hotspot!",
+    "1073": "You have already received bonus points for this meeting hotspot!",
+    "1074": "Cannot assign bonus points!",
+    "1075": "You have already received super bonus points for this meeting hotspot!",
+    "1076": "You cannot scan yourself!",
+    "1077": "There are no bonus points for this meeting hotspot!",
+
+    "1081": "Couldn't retrieve the experience!",
+    "1082": "Couldn't retrieve experiences!",
+    "1083": "There are no more tickets available!",
+    "1084": "There was a problem with your booking!",
+    "1085": "There are not enough tickets left to fill your order!",
+    "1086": "You don't have enough tokens to reserve tickets for this experience!",
+    "1087": "It's too late to buy tickets for that experience!",
+    "1088": "Couldn't retrieve any tickets!",
+    "1089": "You don't have enough tickets!",
+    "1091": "There was a problem validating your tickets, please try again!",
+    "1092": "That's not a valid amount!",
+
+    "1101": "Couldn't retrieve highscores!",
+    "1102": "Couldn't retrieve weekly highscores!",
+    "1103": "Couldn't retrieve personal highscore!",
+    
+    "1111": "Couldn't retrieve a personal marker with that id!",
+    "1112": "Couldn't retrieve scan information!",
+    "1113": "Cooldown for that QR code isn't over yet!",
+    "1114": "Couldn't save scan!",
+    "1115": "Couldn't assign tokens for that scan!",
+    "1116": "Couldn't retrieve a waypoint with that id!",
+    "1117": "You can't scan your own marker!",
+
+    "1201": "Not a valid Mediahaven id!"
+    
+}

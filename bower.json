@@ -1,0 +1,25 @@
+{
+  "name": "specifi-frontend",
+  "version": "1.0.0",
+  "authors": [
+    "dvermeir <david.vermeir@iminds.be>"
+  ],
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jade-field-mixins": "*",
+    "bootstrap-fileinput": "~2.3.0"
+  }
+}

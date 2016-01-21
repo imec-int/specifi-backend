@@ -1,0 +1,10 @@
+mixin print-qr-btn(args)
+    .form-group
+        .col-sm-9.col-sm-offset-3
+            button.btn(
+                type=args.type ? args.type : 'button',
+                class=attributes.class ? attributes.class : 'btn-default',
+                disabled=args.disabled,
+                onclick=args.click)= args.buttonlabel
+            if args.helptext
+                .help-block= args.helptext

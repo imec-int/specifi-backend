@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /api/*
+Allow: /
+Allow: /mymarker
+Allow: /app
+Allow: /signin
+Disallow: /keystone*

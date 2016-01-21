@@ -1,0 +1,8 @@
+extends layouts/base
+
+block content
+    p= i18n.t("emails.HELLO", {username:username})
+    != i18n.t("emails.WELCOME_MAIL", {appName: i18n.t("APP_NAME"), experiences: i18n.t("EXPERIENCE", {count: 0}), challenges: i18n.t("CHALLENGE", {count:0}), mychallenges: i18n.t("MY_CHALLENGES"), mytokens:i18n.t("MY_TOKENS"), myexperiences: i18n.t("MY_EXPERIENCES"), supportSubject: i18n.t("emails.SUGGESTIONS_SUBJECT"), email: supportEmail})
+    p= i18n.t("emails.TEAM",{appName: i18n.t("APP_NAME")})
+    br
+    p.subtext-italic!= i18n.t("emails.UNSUBSCRIBE_DESCRIPTION",{appName: i18n.t("APP_NAME"), unsubscribeLink:unsubscribeLink})

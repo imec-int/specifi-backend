@@ -1,0 +1,12 @@
+extends ../layouts/default
+
+block content
+    .container.text-center.intro
+        a(href='/'): img(src='/images/playgroundlogo.png', alt=brand).logo-header
+        a(href='/'): img(src='/images/playgroundlogo_text.png',alt=brand_text).logo-header-text
+        h1.countdown-title= t("COUNTDOWN_TITLE", { appName: t("APP_NAME"), date: t("GAME_START_DATE")})
+        .row
+            .col-xs-6
+                img(alt="Get it on the Apple app store",src='/images/app-store-soon.png').badge-logo.pull-right
+            .col-xs-6
+                img(alt="Get it on Google Play" src="/images/google-play-soon.png").badge-logo.pull-left

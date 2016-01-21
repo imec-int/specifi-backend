@@ -1,0 +1,87 @@
+include ../../../public/components/jade-field-mixins/fields/field
+mixin location-field(args)
+    block css
+        link(href="/styles/typeahead/input.min.css", rel="stylesheet")
+        .form-control-wrapper: input(id='address', type='text', placeholder=t("location.PLACEHOLDER"), autocomplete='off', value=(args.value)?args.value.street2:'').form-control.typeahead
+        div(id='map').form-control
+
+        input(id='number_input', type='text', name=args.name+'.number', value=(args.value)?args.value.number:'', hidden='true')
+        input(id='name_input', type='text', name=args.name+'.name', value=(args.value)?args.value.name:'', hidden='true')
+        input(id='street_input', type='text', name=args.name+'.street1', value=(args.value)?args.value.street1:'', hidden='true')
+        input(id='suburb_input',type='text', name=args.name+'.suburb', value=(args.value)?args.value.suburb:'', hidden='true')
+        input(id='state_input', type='text', name=args.name+'.state', value=(args.value)?args.value.state:'', hidden='true')
+        input(id='postcode_input', type='text', name=args.name+'.postcode', value=(args.value)?args.value.postcode:'', hidden='true')
+        input(id='country_input', type='text', name=args.name+'.country', value=(args.value)?args.value.country:'', hidden='true')
+        input(id='lng_input', type='text', name=args.name+'.geo_lng', value=(args.value)?((args.value.geo)?args.value.geo[0]:''):'', hidden='true')
+        input(id='lat_input', type='text', name=args.name+'.geo_lat', value=(args.value)?((args.value.geo)?args.value.geo[1]:''):'', hidden='true')
+        input(id='formatted_input', type='text', name=args.name+'.street2', value=(args.value)?args.value.street2:'', hidden='true')
+    block js
+        script.
+            function addLoadEvent(func) {
+                var oldonload = window.onload;
+                if (typeof window.onload != 'function') {
+                    window.onload = func;
+                } else {
+                    window.onload = function() {
+                        if (oldonload) {
+                            oldonload();
+                        }
+                        func();
+                    }
+                }
+            }
+        
+            addLoadEvent(initMaps);
+        
+            function initMaps() {
+                var markerLocation;
+                var oldItem = !{JSON.stringify(item)};
+                if(!$.isEmptyObject(oldItem) && oldItem.location.geo) {
+                    markerLocation = new google.maps.LatLng(oldItem.location.geo[1], oldItem.location.geo[0]);
+                } else {
+                    markerLocation = new google.maps.LatLng(50.8194776, 3.2577263000000585);
+                }
+                var addressPicker = new AddressPicker({map: {id: '#map', options:{center: markerLocation, zoom: 18}},
+                    marker: {draggable: true, visible: true, position:markerLocation},
+                    zoomForLocation: 18,
+                    reverseGeocoding: true,
+                    autocompleteService: {
+                        types: ['geocode','establishment']
+                    }
+                });
+                $('#address').typeahead(null, {
+                  displayKey: 'description',
+                  source: addressPicker.ttAdapter()
+                });
+                addressPicker.bindDefaultTypeaheadEvent($('#address'));
+                $(addressPicker).on('addresspicker:selected', function (event, result) {
+                    $('#lat_input').val(result.lat());
+                    $('#lng_input').val(result.lng());
+                    $('#number_input').val(result.nameForType('street_number'));
+                    $('#name_input').val(result.nameForType('premise'));
+                    $('#street_input').val(result.nameForType('route'));
+                    $('#suburb_input').val(result.nameForType('locality'));
+                    $('#state_input').val(result.nameForType('administrative_area_level_1'));
+                    $('#postcode_input').val(result.nameForType('postal_code'));
+                    $('#country_input').val(result.nameForType('country'));
+                    $('#address').val(result.address());
+                    $('#formatted_input').val(result.address());
+                });
+            
+                google.maps.event.addListener(addressPicker.map, 'click', function(event) {
+                    if(addressPicker && addressPicker.marker) {
+                        if(event && event.latLng) {
+                            addressPicker.marker.setPosition(event.latLng);
+                            google.maps.event.trigger(addressPicker.marker,'dragend');
+                        }
+                    }
+                });
+            };
+    
+            var timer = setInterval(function () {
+                google.maps.event.trigger(map, "resize");
+            }, 1000);
+        
+            window.onresize = function (){
+                google.maps.event.trigger(map, "resize");
+            };
