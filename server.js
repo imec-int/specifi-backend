@@ -4,13 +4,15 @@ require('dotenv').load();
 // Require keystone
 var keystone = module.exports = require('keystone'),
     _ = require('underscore'),
-    i18n = require('i18next');
+    i18n = require('i18next'),
+	mandrill = require('mandrill-api/mandrill'),
+	mandrill_client = new mandrill.Mandrill(process.env.MANDRILL_API_KEY);
 
 var agenda = require('./lib/agenda/agenda');
 
 keystone.init({
     
-	'name': 'playground',
+	'name': 'playground-backend',
 	'brand': 'Playground',
     'title': process.env.APP_NAME,
     
@@ -36,15 +38,24 @@ keystone.init({
     
     'ssl': 'true',
     'ssl port': process.env.PORT,
-    'ssl key': '../yourkey.pem',
-    'ssl cert': '../yourkey.pem',
+    'ssl key': './key.pem',
+    'ssl cert': './cert.pem',
     
-    'cookie signin': true
-    
+    'cookie signin': true,
+	
+	'cloudinary config': { 
+		cloud_name: process.env.CLOUDINARY_CLOUD, 
+		api_key: process.env.CLOUDINARY_KEY, 
+		api_secret: process.env.CLOUDINARY_SECRET
+	},
+	'cloudinary folders': true,
+	'cloudinary secure': true
 });
 
 
 i18n.init({
+	locales:['en'],
+	directory: __dirname + '/locales',
     lng: "en-US",
     fallbackLng: 'en-US'
 }, function(t) {
@@ -65,15 +76,15 @@ i18n.init({
 
     // Load your project's Routes
     keystone.set('routes', require('./routes'));
-
+	
+	//Set mandrill
+	keystone.mandrill_client = mandrill_client;
+	
     // Configure the navigation bar in Keystone's Admin UI
     keystone.set('nav', {
         'users': 'User',
         'challenges': ['Challenge', 'Waypoint'],
-        'personal-marker': ['PersonalMarker'],
-        'meeting-hotspots': ['MeetingHotspotTemplate', 'MeetingHotspot', 'MeetingHotspotScan'],
-        'experiences':['Experience', 'ExperienceTicket'],
-        'user-data': ['Scan', 'UserChallenge', 'UserGeneratedContent', 'UserGeneratedContentRating', 'ActionLog'],
+        'user-data': ['UserChallenge', 'UserGeneratedContent', 'UserGeneratedContentRating', 'ActionLog'],
         'settings': 'GameSetting'
     });
 
@@ -86,28 +97,17 @@ i18n.init({
                 keystone.set(setting.name, setting.value);
             });
             //Start agenda
-            keystone.agenda = agenda(['meetinghotspot', 'email']);
-
-            //Schedule random hotspots
-            keystone.agenda.cancel({name:'spawnRandomMeetingHotspot'}, function(err, removed) {
-                var job = keystone.agenda.create('spawnRandomMeetingHotspot');
-                job.schedule(keystone.get('randomHotspotTime'));
-                job.repeatAt('tomorrow at '+keystone.get('randomHotspotTime'));
-                job.save(function(err){
-                    console.log('Random hotspot job saved');
-                });
-            });
+            keystone.agenda = agenda(['email']);
 
         });
 
     });
 });
-
 i18n.registerAppHelper(keystone.app);
 
 // Configure i18n
 keystone.app.configure(function() {
-    keystone.app.use(i18n.handle);
+	keystone.app.use(i18n.handle);
 });
 
 

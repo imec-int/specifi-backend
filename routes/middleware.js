@@ -28,8 +28,6 @@ exports.initLocals = function(req, res, next) {
     locals.title = process.env.APP_NAME;
     locals.user = req.user;
     locals.navLinks = [
-		{ label: i18n.t("highscores.HIGHSCORES_TITLE"), key: 'highscores', href: '/highscores', class:'fa-cubes', requireUser: false },
-		{ label: i18n.t("personalmarker.PERSONALMARKER_TITLE"), key: 'mymarker', href: '/mymarker', class:'fa-qrcode', requireUser: true }
 	];
 	
 	next();
@@ -63,7 +61,7 @@ exports.flashMessages = function(req, res, next) {
 
 exports.requireUser = function(req, res, next) {
 	if (!req.user) {
-		req.flash('error', 'You have to be logged in to see this page.');
+		req.flash('error', 'Je moet ingelogd zijn om deze pagina te bezoeken.');
 		res.redirect('/signin');
 	} else {
 		next();

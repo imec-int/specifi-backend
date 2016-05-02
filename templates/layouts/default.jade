@@ -10,7 +10,7 @@ html.background-html
         meta(http-equiv="X-UA-Compatible" content="IE=edge")
 
         title=title
-        link(rel="shortcut icon", href="/favicon.ico?v=3", type="image/x-icon")
+        link(rel="shortcut icon", href="/favicon.ico?v=4", type="image/x-icon")
 
         //- Customise the stylesheet for your site by editing /public/styles/site.less
         //- All .less files will be automatically compiled and minified in production.
@@ -29,6 +29,16 @@ html.background-html
             script(src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js")
             script(src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js")
         //-[endif]
+
+        <!-- Google Analytics -->
+        script.
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-38704794-6', 'auto');
+            ga('send', 'pageview');
+        <!-- End Google Analytics -->
 
         //- Include template-specific stylesheets by extending the css block
         block css
@@ -76,6 +86,7 @@ html.background-html
                                     li: a(href='/keystone')= t("OPEN_ADMIN_PANEL")
                                 li: a(href='/keystone/signout')= t("signin.LOG_OUT")
                             else
+                                li: a(href='/register')= t("register.REGISTER")
                                 li: a(href='/signin')= t("signin.SIGN_IN")
 
         //- BODY

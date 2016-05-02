@@ -7,7 +7,8 @@ var GameSetting = new keystone.List('GameSetting', { track: true, nocreate: true
 
 GameSetting.add({
     name: { label:i18n.t("NAME"), type: String, required: true, index: true, initial: true, noedit: true },
-    value: { label:i18n.t("VALUE"), type: String, required: true, initial: true }
+    value: { label:i18n.t("VALUE"), type: String, required: true, initial: true },
+	description: { label: i18n.t("DESCRIPTION"), type:Types.Textarea, noedit:true}
 });
 
 
@@ -23,23 +24,7 @@ GameSetting.schema.pre('save', function(next){
     next();
 });
 
-GameSetting.schema.post('save', function(next){
-    if(this.name ==='randomHotspotTime') {
-        if(keystone.agenda) {
-            //Schedule random hotspots
-            keystone.agenda.cancel({name:'spawnRandomMeetingHotspot'}, function(err, removed) {
-                var job = keystone.agenda.create('spawnRandomMeetingHotspot');
-                job.schedule(keystone.get('randomHotspotTime'));
-                job.repeatAt('tomorrow at ' + keystone.get('randomHotspotTime'));
-                job.save(function(err){
-                    console.log('Random hotspot job saved');
-                });
-            });
-        }
-    }
-});
-
 //****************REGISTRATION****************//    
     
-GameSetting.defaultColumns = 'name, value';
+GameSetting.defaultColumns = 'name, value, description';
 GameSetting.register();

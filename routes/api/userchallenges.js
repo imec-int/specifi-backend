@@ -7,7 +7,8 @@ var Challenge = keystone.list('Challenge'),
     UserGeneratedContent = keystone.list('UserGeneratedContent');
     moment = require('moment'),
     logUtils = require('../../lib/util/log-utils'),
-    i18n = require('i18next');
+    i18n = require('i18next'),
+	scanUtils = require("../../lib/util/scan-utils");
 
 /*
 * Get a specific UserChallenge
@@ -28,33 +29,41 @@ exports.start = function(req, res) {
         if(err) return res.apiError('1000', i18n.t('1000'));
         if(!challenge) return res.apiError('1021', i18n.t('1021'));
         if(challenge.status === 0) { return res.apiError('1034', i18n.t('1034')); }
-        UserChallenge.model.findOne({challenge: req.params.challengeid, user: req.user._id, complete: true}).exec(function(err, found){
-            if(found && !challenge.repeatable) { return res.apiError('1030', i18n.t('1030')); }
+        UserChallenge.model.find({challenge: req.params.challengeid, user: req.user._id}).sort("-end").exec(function(err, found){
             
-            //TODO why is this done twice?
-            findUserChallenge({challenge: req.params.challengeid, user: req.user._id, complete: false}, function(err, userChallenge) {
-                if(userChallenge) return res.apiError('1022', i18n.t('1022'));
-                var extra = false;
-                if(req.params.extra ==='true') {
-                    extra = true;
-                }
-                var newUserChallenge = new UserChallenge.model({ user: req.user, challenge: challenge, start: moment(), extradifficulty: extra });
-                newUserChallenge.save(function(err) {
-                    if(err) return res.apiError('1000', i18n.t('1000'));
-                    var populateOpts = [ { path:'challenge', model:'Challenge' },
-                        { path: 'user', model:'User' }, { path:'completedWP hintsUsed', model:'Waypoint' } ];
+			if(found && found.length>0){
+				if(!challenge.repeatable) { return res.apiError('1030', i18n.t('1030')); }
+				
+				var userChallenge = _.find(found, function(uc){
+					return uc.complete === false;
+				});
 
-                    UserChallenge.model.populate(newUserChallenge, populateOpts, function(err, userChallenge){
-                        if(err || !userChallenge) return res.apiError('1000', i18n.t('1000'));
-                        Waypoint.model.populate(userChallenge, { path: 'challenge.waypoints', model:'Waypoint' },function(err, userChallenge) {
-                            if(err) return res.apiError('1000', i18n.t('1000'));
-                            userChallenge.getMediaHavenUrls(function(userChallenge) {
-                                return res.apiResponse(userChallenge);
-                            });
-                        });
-                    });
-                });
-            });
+				if(userChallenge) return res.apiError('1022', i18n.t('1022'));
+				
+				var lastUserChallenge = found[0];
+				var cooldownTime=parseInt(keystone.get('challengeCooldown'),10);
+				
+				if(lastUserChallenge.cooldownLimited && !scanUtils.isCooldownOver(lastUserChallenge.end, cooldownTime)) return res.apiError('1028', lastUserChallenge.end);
+			}
+			
+			var extra = false;
+			if(req.params.extra ==='true') {
+				extra = true;
+			}
+			var newUserChallenge = new UserChallenge.model({ user: req.user, challenge: challenge, randomOrder: challenge.randomOrderAllowed, start: moment(), extradifficulty: extra, cooldownLimited: challenge.cooldownLimited });
+			newUserChallenge.save(function(err) {
+				if(err) return res.apiError('1000', i18n.t('1000'));
+				var populateOpts = [ { path:'challenge', model:'Challenge' },
+					{ path: 'user', model:'User' }, { path:'completedWP', model:'Waypoint' } ];
+
+				UserChallenge.model.populate(newUserChallenge, populateOpts, function(err, userChallenge){
+					if(err || !userChallenge) return res.apiError('1000', i18n.t('1000'));
+					Waypoint.model.populate(userChallenge, { path: 'challenge.waypoints', model:'Waypoint' },function(err, userChallenge) {
+						if(err) return res.apiError('1000', i18n.t('1000'));
+						return res.apiResponse(userChallenge);
+					});
+				});
+			});
         });
     });
 }
@@ -68,9 +77,7 @@ exports.stop = function(req, res) {
         if(!userChallenge) return res.apiError('1023', i18n.t('1023'));
         userChallenge.remove(function(err, userChallenge) {
             if(err || !userChallenge) return res.apiError('1023', i18n.t('1023'));
-            userChallenge.getMediaHavenUrls(function(userChallenge) {
-                return res.apiResponse(userChallenge);
-            });
+			return res.apiResponse(userChallenge);
         });
     });
 }
@@ -81,10 +88,20 @@ exports.stop = function(req, res) {
 exports.completeWP = function(req, res) {
     Waypoint.model.findOne({_id:req.body.wpid}).exec(function(err, waypoint){
         if(err || !waypoint) { return res.apiError('1031', i18n.t('1031')) }
-        
-        var ugc = (req.files)? req.files['content_upload'] : null;
-        if(waypoint.type === 'ugc' && waypoint.ugcType === 'text') {
-            ugc = req.body.contentText;
+		var ugc;
+		if(waypoint.type === 'ugc') {
+			
+			switch(waypoint.ugcType) {
+				case 'text':
+					ugc = req.body.contentText;
+					break;
+				case 'video':
+					ugc = (req.files)? req.files['contentVideo_upload'] : null;
+					break;
+				case 'picture':
+					ugc = (req.files)? req.files['contentImage_upload'] : null;
+					break;
+			}
         }
         completeWaypointForUserChallenge(req.body.challengeid, req.user, waypoint, ugc, req, function(err, userChallenge) {
             if(err) { return res.apiError(err, i18n.t(err)); }
@@ -101,10 +118,21 @@ exports.completeWPWithQR = function(req, res) {
     Waypoint.model.findOne({qr:req.body.qrcode}).exec(function(err, waypoint){
         if(err || !waypoint) { return res.apiError('1031', i18n.t('1031')) }
 
-        var ugc = (req.files)? req.files['content_upload'] : null;
-        if(waypoint.type === 'ugc' && waypoint.ugcType === 'text') {
-            ugc = req.body.contentText;
-        }
+		var ugc;
+		if(waypoint.type === 'ugc') {
+
+			switch(waypoint.ugcType) {
+				case 'text':
+					ugc = req.body.contentText;
+					break;
+				case 'video':
+					ugc = (req.files)? req.files['contentVideo_upload'] : null;
+					break;
+				case 'picture':
+					ugc = (req.files)? req.files['contentImage_upload'] : null;
+					break;
+			}
+		}
 
         completeWaypointForUserChallenge(req.body.challengeid, req.user, waypoint, ugc, req, function(err, userChallenge) {
             if(err) { return res.apiError(err, i18n.t(err)); }
@@ -122,10 +150,21 @@ exports.completeWPWithBeacon = function(req, res) {
     Waypoint.model.findOne({_id: req.body.wpid, beaconUUID:req.body.beacon}).exec(function(err, waypoint){
         if(err || !waypoint) { return res.apiError('1031', i18n.t('1031')) }
 
-        var ugc = (req.files)? req.files['content_upload'] : null;
-        if(waypoint.type === 'ugc' && waypoint.ugcType === 'text') {
-            ugc = req.body.contentText;
-        }
+		var ugc;
+		if(waypoint.type === 'ugc') {
+
+			switch(waypoint.ugcType) {
+				case 'text':
+					ugc = req.body.contentText;
+					break;
+				case 'video':
+					ugc = (req.files)? req.files['contentVideo_upload'] : null;
+					break;
+				case 'picture':
+					ugc = (req.files)? req.files['contentImage_upload'] : null;
+					break;
+			}
+		}
 
         completeWaypointForUserChallenge(req.body.challengeid, req.user, waypoint, ugc, req, function(err, userChallenge) {
             if(err) { return res.apiError(err, i18n.t(err)); }
@@ -134,59 +173,6 @@ exports.completeWPWithBeacon = function(req, res) {
     });
 }
 
-/*
-* Mark a hint as used
-* */
-exports.usedHint = function (req, res) {
-    if(req.user.score < keystone.get('hintCost')) {
-        return res.apiError('1028', i18n.t('1028'));
-    }
-    
-    Waypoint.model.findOne({_id:req.params.wpid}).exec(function(err, waypoint){
-        if(err || !waypoint) { return res.apiError('1031', i18n.t('1031')) }
-        
-        populateUserChallenge({challenge: req.params.challengeid, user: req.user._id, complete: false}, function(err, userChallenge){
-            if(err) return res.apiError('1000', i18n.t('1000'));
-            if(!userChallenge) return res.apiError('1025', i18n.t('1025'));
-
-            var checkIfPresent = _.find(userChallenge.challenge.waypoints, function(wp){
-                if(wp._id.toString() === waypoint._id.toString()) {
-                    return true;
-                }
-                return false;
-            });
-            if(checkIfPresent === undefined) { return res.apiError('1033', i18n.t('1033')); }
-            
-            
-            if(!userChallenge.hintsUsed) { userChallenge.hintsUsed = []; }
-            
-            var checkIfHintUsed = _.find(userChallenge.hintsUsed, function(wp){
-                if(wp.toString() === waypoint._id.toString()) {
-                    return true;
-                }
-                return false;
-            });
-            if(checkIfHintUsed !== undefined) { return res.apiError('1029', i18n.t('1029')); }
-            
-            userChallenge.hintsUsed.push(waypoint._id);
-            
-            userChallenge.save(function(err, userChallenge) {
-                if(err || !userChallenge) return res.apiError('1000', i18n.t('1000'));
-                req.user.score-=parseInt(keystone.get('hintCost'));
-                req.user.save(function(err, user) {
-                    if(err) return callback('1000');
-                    userChallenge.user = user;
-                    userChallenge.getMediaHavenUrls(function(userChallenge) {
-                        logUtils.logPoints([{user: req.user._id, action: userChallenge.id, actionType:logUtils.USERCHALLENGE, score: Math.abs(parseInt(keystone.get('hintCost')))*-1}],
-                            function(err){
-                                return res.apiResponse(userChallenge);
-                        });
-                    });
-                });
-            });
-        });
-    });
-}
 
 //***********************UTILS***********************//
 
@@ -219,6 +205,7 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
 
         if(!userChallenge.completedWP) userChallenge.completedWP = [];
 
+		//Checks if the waypoint is part of the challenge
         var checkIfPresent = _.find(userChallenge.challenge.waypoints, function(wp){
             if(wp._id.toString() === waypoint._id.toString()) {
                 return true;
@@ -227,6 +214,7 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
         });
         if(checkIfPresent === undefined) { return callback('1033'); }
 
+		//Checks if the waypoint wasn't already completed
         var checkIfCompleted = _.find(userChallenge.completedWP, function(wp){
             if(wp.toString() === waypoint._id.toString()) {
                 return true;
@@ -237,18 +225,22 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
 
         userChallenge.completedWP.push(waypoint._id);
 
-        var wpIndex = -1;
-        for(i=0; i < userChallenge.challenge.waypoints.length; i++) {
-            if(userChallenge.challenge.waypoints[i]._id.toString() === waypoint._id.toString()) {
-                wpIndex = i;
-                break;
-            }
-        }
+		//Checks the order of the waypoints, if needed
+		if(!userChallenge.randomOrder) {
+			var wpIndex = -1;
+			for(i=0; i < userChallenge.challenge.waypoints.length; i++) {
+				if(userChallenge.challenge.waypoints[i]._id.toString() === waypoint._id.toString()) {
+					wpIndex = i;
+					break;
+				}
+			}
+
+			if(userChallenge.completedWP.indexOf(waypoint._id) != wpIndex) {
+				return callback('1027');
+			}
+		}
         
-        if(userChallenge.completedWP.indexOf(waypoint._id) != wpIndex) {
-            return callback('1027');
-        }
-        
+		//Checks if the challenge was completed with this waypoint
         if(userChallenge.completedWP.length === userChallenge.challenge.waypoints.length){
             userChallenge.complete = true;
             userChallenge.end = moment();
@@ -258,6 +250,7 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
             }
         }
 
+		//Saves the userchallenge
         userChallenge.save(function(err, userChallenge) {
             if(err || !userChallenge) return callback('1000');
             if(waypoint.type === 'ugc') {
@@ -267,12 +260,18 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
                     user: user._id,
                     userchallenge:userChallenge._id
                 };
-                
-                if(waypoint.ugcType ==='text') {
-                    contentData.contentText = ugc;
-                } else {
-                    contentData.content = ugc;
-                }
+
+				switch(waypoint.ugcType) {
+					case 'text':
+						contentData.contentText = ugc;
+						break;
+					case 'video':
+						contentData.contentVideo = ugc;
+						break;
+					case 'picture':
+						contentData.contentImage = ugc;
+						break;
+				}
 
                 var userGeneratedContent = new UserGeneratedContent.model(contentData);
 
@@ -283,17 +282,13 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
                         user.save(function(err, user) {
                             if(err) return callback('1000');
                             userChallenge.user = user;
-                            userChallenge.getMediaHavenUrls(function(userChallenge) {
-                                logUtils.logPoints([{user: req.user._id, action: userChallenge.id, actionType:logUtils.USERCHALLENGE, score: userChallenge.score}],
-                                    function(err){
-                                        return callback(null, userChallenge);
-                                });
-                            });
+							logUtils.logPoints([{user: req.user._id, action: userChallenge.id, actionType:logUtils.USERCHALLENGE, score: userChallenge.score}],
+								function(err){
+									return callback(null, userChallenge);
+							});
                         });
                     } else {
-                        userChallenge.getMediaHavenUrls(function(userChallenge) {
-                            return callback(null, userChallenge);
-                        });
+						return callback(null, userChallenge);
                     }
                 });
             } else {
@@ -303,17 +298,13 @@ function completeWaypointForUserChallenge(challengeId, user, waypoint, ugc, req,
                     user.save(function(err, user) {
                         if(err) return callback('1000');
                         userChallenge.user = user;
-                        userChallenge.getMediaHavenUrls(function(userChallenge) {
-                            logUtils.logPoints([{user: req.user._id, action: userChallenge.id, actionType:logUtils.USERCHALLENGE, score: userChallenge.score}],
-                                function(err){
-                                    return callback(null, userChallenge);
-                            });
-                        });
+						logUtils.logPoints([{user: req.user._id, action: userChallenge.id, actionType:logUtils.USERCHALLENGE, score: userChallenge.score}],
+							function(err){
+								return callback(null, userChallenge);
+						});
                     });
                 } else {
-                    userChallenge.getMediaHavenUrls(function(userChallenge) {
-                        return callback(null, userChallenge);
-                    });
+					return callback(null, userChallenge);
                 }
             }
         });
@@ -342,9 +333,7 @@ function populateUserChallenge(options, callback) {
             if(err) return callback(err);
             UserChallenge.model.populate(userChallenge, {path: 'challenge.waypoints', model:'Waypoint'}, function(err, userChallenge) {
                 if(err || !userChallenge){ return callback(err, userChallenge); }
-                userChallenge.getMediaHavenUrls(function(userChallenge) {
-                    return callback(err, userChallenge);
-                });
+				return callback(err, userChallenge);
             });
         });
 }

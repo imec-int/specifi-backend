@@ -1,0 +1,5 @@
+{
+    "HOST" : "yourserver",
+    "DEST" : "playground",
+    "USER" : "john"
+}

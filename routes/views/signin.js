@@ -1,12 +1,13 @@
 var keystone = require('keystone'),
-    i18n = require('i18next');
+    i18n = require('i18next')
+	url = require('url');
 
 exports = module.exports = function(req, res) {
 
     var locals = res.locals,
         view = new keystone.View(req, res);
 
-    locals.logo = '/images/playgroundlogo.png';
+    locals.logo = '/images/logo.jpg';
     
     view.on('post', { action: 'signin' }, function(next) {
 
@@ -19,11 +20,7 @@ exports = module.exports = function(req, res) {
             if(req.user.canAccessKeystone) {
                return res.redirect('/keystone');
             }
-            if (req.query && req.query.from) {
-                return res.redirect(req.query.from);
-            } else {
-                return res.redirect('/');
-            }
+			return res.redirect('/');
         }
 
         var onFail = function() {

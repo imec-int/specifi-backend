@@ -1,5 +1,6 @@
 var keystone = require('keystone'),
     i18n = require('i18next');
+
 var User = keystone.list('User');
 var UserChallenge = keystone.list('UserChallenge'),
     Challenge = keystone.list('Challenge'),
@@ -12,10 +13,7 @@ exports.get = function(req, res) {
     User.model.findById(req.params.id, "-password -username_lowercase -email_lowercase").exec(function(err, user) {
         if(err) return res.apiError('1000', i18n.t('1000'));
         if(!user) return res.apiError('1004', i18n.t('1004'));
-        user.getMediaHavenUrls(function(user) {
-            return res.apiResponse({ user: user });
-        });
-        
+		return res.apiResponse({ user: user });
     });
 };
 
@@ -25,17 +23,24 @@ exports.get = function(req, res) {
 
 exports.register = function(req, res) {
     var userData = {
-        username: req.body['username'],
-        email: req.body['email'],
-        password: req.body['password'],
-        password_confirm: req.body['password_confirm'],
-        gender: req.body['gender'],
-        birthyear: req.body['birthyear'],
+        username: req.body.username,
+		name: {
+			first: req.body.firstname,
+			last: req.body.surname
+		},
+        email: req.body.email,
+        password: req.body.password,
+        password_confirm: req.body.password,
         isAdmin: false,
-        score: parseInt(keystone.get('startingTokens')) || 0
+		language: "nl-NL",
+		privacyAndTerms: (req.body.privacyAndTerms === true || req.body.privacyAndTerms === "true" || req.body.privacyAndTerms === "1")?true:false,
+		contactProjects: (req.body.contactProjects === true || req.body.contactProjects === "true" || req.body.contactProjects === "1")?true:false,
+		contactSurveys: (req.body.contactSurveys === true || req.body.contactSurveys === "true" || req.body.contactSurveys === "1")?true:false,
+		role: 'USER',
+        score: keystone.get('startingTokens'),
+		photo: (req.files)?req.files['photo_upload']:null
     };
-
-    if(!userData.username || !userData.email || !userData.password) {
+    if(userData.name === {}|| !userData.username || !userData.email || !userData.password) {
         return res.apiError('1001', i18n.t('1001'));
     }
     
@@ -44,63 +49,51 @@ exports.register = function(req, res) {
     }
     
     var newUser = new User.model(userData);
-    
     User.model.findOne({username_lowercase: userData.username.toLowerCase()}, function(err, user) {
         if(user) { return res.apiError('1007', i18n.t('1007')); }
         User.model.findOne({email_lowercase: userData.email.toLowerCase()}, function(err, user) {
             if(err || user) { return res.apiError('1002', i18n.t('1002')); }
-            newUser.getUpdateHandler(req).process(userData, {fields:'username, email, password, gender, birthyear, isAdmin, score'},
-                function(err) {
-                    if(err) { return res.apiError('1003', i18n.t('1003')); }
-                    if(!newUser.welcomeMailSend)
-                        keystone.agenda.now('welcome email',{userId: newUser.id});
-                    
-                    if(req.files && req.files['photo_upload']) {
-                        var photo = { };
-                        photo.photo = req.files['photo_upload'];
-
-                        newUser.getUpdateHandler(req).process(photo, { fields: 'photo' }, function(err) {
-                            if(err) { return res.apiError('1009', i18n.t('1009')); }
-                            return res.apiResponse({ success: true }); 
-                        });
-                    }
-                    else
-                        return res.apiResponse({ success: true });
-            });
+			newUser.getUpdateHandler(req).process(userData, {fields: 'username, email, password, role, language, isAdmin, score, photo, privacyAndTerms, contactProjects, contactSurveys'},
+				function (err) {
+					if (err) {
+						console.log("Error: "+ JSON.stringify(err));
+						return res.apiError('1003', i18n.t('1003'));
+					}
+					if (!newUser.welcomeMailSend)
+						keystone.agenda.now('welcome email', {userId: newUser.id});
+					
+					return res.apiResponse({success: true});
+			});
         });
     });
     
 };
 
-
 /*
-* Login user
-* */
+ * Login user
+ * */
 
 exports.login = function(req, res) {
-    if(!req.body || !req.body['email']) { 
-        return res.apiError('1000', i18n.t('1000')); 
-    }
-    User.model.findOne({ email_lowercase: req.body['email'].toLowerCase() }, "-password -username_lowercase -email_lowercase", function(err, user) {
-        if(err){ 
-            console.log(JSON.stringify(err));
-            return res.apiError('1000', i18n.t('1000')); 
-        }
-        if(!user){ return res.apiError('1004', i18n.t('1004')); }
-        
-        keystone.session.signin({email: req.body['email'], password: req.body['password']}, req, res, 
-            function(user) {
-                user.getMediaHavenUrls(function(user) {
-                    return res.apiResponse({ user: user });
-                });
-            }, 
-            function() {
-                return res.apiError('1005', i18n.t('1005'));
-            }
-        );
-    });
-};
+	if(!req.body || !req.body['email']) {
+		return res.apiError('1000', i18n.t('1000'));
+	}
+	User.model.findOne({ email_lowercase: req.body['email'].toLowerCase() }, "-password -username_lowercase -email_lowercase", function(err, user) {
+		if(err){
+			console.log(JSON.stringify(err));
+			return res.apiError('1000', i18n.t('1000'));
+		}
+		if(!user){ return res.apiError('1004', i18n.t('1004')); }
 
+		keystone.session.signin({email: req.body['email'], password: req.body['password']}, req, res,
+			function(user) {
+				return res.apiResponse({ user: user });
+			},
+			function() {
+				return res.apiError('1005', i18n.t('1005'));
+			}
+		);
+	});
+};
 
 /*
 * Logout user
@@ -166,9 +159,7 @@ exports.resetPassword = function(req,res) {
             if(err) return res.apiError('1000', i18n.t('1000'));
             keystone.session.signin(user._id.toString(), req, res,
                 function(user) {
-                    user.getMediaHavenUrls(function(user) {
-                        return res.apiResponse({ user: user });
-                    });
+					return res.apiResponse({ user: user });
                 },
                 function(err) {
                     return res.apiError('1005', i18n.t('1005'));
@@ -214,23 +205,17 @@ exports.getChallenges = function(req, res) {
     var completed = false;
     if(req.params.complete && req.params.complete ==='true')
         completed = true;
-    UserChallenge.model.find({'user': req.params.id, complete: completed}).populate('challenge user completedWP hintsUsed').exec(function(err, userChallenges) {
+    UserChallenge.model.find({'user': req.params.id, complete: completed}).populate('challenge user completedWP').exec(function(err, userChallenges) {
 
         if(err) return res.apiError('1000', i18n.t('1000'));
         
         Challenge.model.populate(userChallenges, {path: 'challenge.waypoints', model:'Waypoint'}, function(err, userChallenges){
 
             if(err) return res.apiError('1000', i18n.t('1000'));
-            
-            async.each(userChallenges, function(userChallenge, cb) {
-                userChallenge.getMediaHavenUrls(function(userChallenge) {
-                    cb();
-                });
-            }, function(err) {
-                return res.apiResponse({
-                    challenges: userChallenges
-                });
-            });
+
+			return res.apiResponse({
+				challenges: userChallenges
+			});
             
         });
         

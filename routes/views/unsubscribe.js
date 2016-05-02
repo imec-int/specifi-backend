@@ -15,7 +15,7 @@ exports = module.exports = function(req, res) {
 
     var locals = res.locals,
         view = new keystone.View(req, res);
-    locals.logo = '/images/playgroundlogo.png';
+    locals.logo = '/images/logo.jpg';
 
 
     view.on('post', { action: 'unsubscribe' }, function(next) {

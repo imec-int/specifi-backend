@@ -2,7 +2,7 @@ var keystone = require('keystone'),
     GameSetting = keystone.list('GameSetting');
 
 var gameSettings = [
-    { name: 'startingTokens', value: 5 }
+    { name: 'startingTokens', value: 0, description:"Token amount new players start the game with." }
 ];
 
 exports = module.exports = function(done) {

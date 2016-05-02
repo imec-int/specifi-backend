@@ -3,11 +3,13 @@ block content
     p Hi #{username},
     p You asked us to reset your Playground password.
     p. 
-        Click <a href="#{resetLink}">this</a> link to navigate to the Playground site and enter a new password.
+        Click <a href="#{resetLink}">this</a> link to navigate to the Playground App site and enter a new password.
         You can use this new password to authenticate on both the site and the Playground app.
     p.  
         If you didn't ask to reset your password please ignore this email.
     br
     p <b>Open up, game on!</b>
+    br
+    p The Playground team.
     br
     p.subtext-italic!= i18n.t("emails.UNSUBSCRIBE_DESCRIPTION", {appName: i18n.t("APP_NAME"),unsubscribeLink: unsubscribeLink})

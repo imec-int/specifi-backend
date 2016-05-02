@@ -1,9 +1,6 @@
 var _ = require('underscore'),
     keystone = require('keystone'),
-    CustomTypes = require('../lib/fieldTypes'),
     Types = keystone.Field.Types,
-    request = require('request'),
-    async = require('async'),
     availabilityUtils = require('../lib/util/availability-utils'),
     Challenge = keystone.list('Challenge'),
     i18n = require("i18next");
@@ -48,73 +45,26 @@ Waypoint.add({
         text: { label: i18n.t("DESCRIPTION"), type: Types.Textarea },
         image: {
             label: i18n.t("waypoints.CONTENT_IMAGE"),
-            name: 'random',
-            prefix: 'waypoint-picture-',
-            type: CustomTypes.MediaHavenFile,
-            host: process.env.MEDIAHAVEN_HOST,
-            dest: process.env.MEDIAHAVEN_PATH,
-            allowedTypes: ["image/png", "image/jpeg", "image/gif"],
-            username: process.env.MEDIAHAVEN_USERNAME,
-            password: process.env.MEDIAHAVEN_PW,
-            ingestSpaceId: process.env.MEDIAHAVEN_MEDIA_INGESTSPACE,
-            keywords: ['waypoint', 'playground', process.env.ENVIRONMENT],
-            categories: ['waypoints'],
-            allowDuplicates: '1',
-            autoPublish: 'true'
+			type: Types.CloudinaryImage,
+			publicId: 'slug',
+			folder: 'waypoints/images',
+			autoCleanup: true
         },
         audio: {
             label: i18n.t("waypoints.CONTENT_AUDIO"),
-            name: 'random',
-            prefix: 'waypoint-audio-',
-            type: CustomTypes.MediaHavenFile,
-            host: process.env.MEDIAHAVEN_HOST,
-            dest: process.env.MEDIAHAVEN_PATH,
-            allowedTypes: ["audio/mpeg3", "audio/wav", "audio/mp3"],
-            username: process.env.MEDIAHAVEN_USERNAME,
-            password: process.env.MEDIAHAVEN_PW,
-            ingestSpaceId: process.env.MEDIAHAVEN_MEDIA_INGESTSPACE,
-            keywords: ['waypoint', 'playground', process.env.ENVIRONMENT],
-            categories: ['waypoints'],
-            allowDuplicates: '1',
-            autoPublish: 'true'
+			type: Types.CloudinaryVideo,
+			publicId: 'slug',
+			folder: 'waypoints/audio',
+			autoCleanup: true
         },
         video: {
             label: i18n.t("waypoints.CONTENT_VIDEO"),
-            name: 'random',
-            prefix: 'waypoint-video-',
-            type: CustomTypes.MediaHavenFile,
-            host: process.env.MEDIAHAVEN_HOST,
-            dest: process.env.MEDIAHAVEN_PATH,
-            allowedTypes: ["video/mp4"],
-            username: process.env.MEDIAHAVEN_USERNAME,
-            password: process.env.MEDIAHAVEN_PW,
-            ingestSpaceId: process.env.MEDIAHAVEN_MEDIA_INGESTSPACE,
-            keywords: ['waypoint', 'playground', process.env.ENVIRONMENT],
-            categories: ['waypoints'],
-            allowDuplicates: '1',
-            autoPublish: 'true'
+			type: Types.CloudinaryVideo,
+			publicId: 'slug',
+			folder: 'waypoints/videos',
+			autoCleanup: true
         }
     }},
-    i18n.t("waypoints.HINT"),
-    {
-        hintText: { type: Types.Textarea, label:i18n.t("waypoints.HINT_TEXT")},
-        hintImage: {
-            label:i18n.t("waypoints.HINT_IMAGE"),
-            name: 'random',
-            prefix: 'waypoint-hint-image-',
-            type: CustomTypes.MediaHavenFile,
-            host: process.env.MEDIAHAVEN_HOST,
-            dest: process.env.MEDIAHAVEN_PATH,
-            allowedTypes: ["image/png", "image/jpeg", "image/gif"],
-            username: process.env.MEDIAHAVEN_USERNAME,
-            password: process.env.MEDIAHAVEN_PW,
-            ingestSpaceId: process.env.MEDIAHAVEN_MEDIA_INGESTSPACE,
-            keywords: ['waypoint', 'playground', 'hints', process.env.ENVIRONMENT],
-            categories: ['waypoints'],
-            allowDuplicates: '1',
-            autoPublish: 'true'
-        }
-    },
     i18n.t("waypoints.BEACONS"), 
     {
         beaconEnabled: { label:i18n.t("waypoints.BEACON_ENABLED"), type: Types.Boolean, default: false, note: i18n.t("waypoints.BEACON_ADVICE") },
@@ -189,88 +139,6 @@ Waypoint.schema.pre('remove', function(next) {
         
     });
 }, true);
-
-
-//****************METHODS****************//
-
-
-Waypoint.schema.methods.getMediaHavenUrls = function(cb) {
-    var waypoint = this;
-    console.log("Get media for waypoint: "+ JSON.stringify(waypoint.name));
-    var content = [];
-    console.log("Get image for waypoint: "+ JSON.stringify(waypoint.content.image));
-    if(waypoint.content.image && waypoint.content.image.mediaObjectId !== "" && waypoint.content.image.mediaObjectId !== undefined)
-        content.push(waypoint.content.image.mediaObjectId); 
-    else
-        waypoint.content.image = null;
-    console.log("Get audio for waypoint: "+ JSON.stringify(waypoint.content.audio));
-    if(waypoint.content.audio && waypoint.content.audio.mediaObjectId !== "" && waypoint.content.audio.mediaObjectId !== undefined)
-        content.push(waypoint.content.audio.mediaObjectId);
-    else
-        waypoint.content.audio = null;
-    console.log("Get video for waypoint: "+ JSON.stringify(waypoint.content.video));
-    if(waypoint.content.video && waypoint.content.video.mediaObjectId !== "" && waypoint.content.video.mediaObjectId !== undefined)
-        content.push(waypoint.content.video.mediaObjectId);
-    else
-        waypoint.content.video = null;
-    console.log("Get hint image for waypoint: "+ JSON.stringify(waypoint.hintImage));
-    if(waypoint.hintImage && waypoint.hintImage.mediaObjectId !== "" && waypoint.hintImage.mediaObjectId !== undefined)
-        content.push(waypoint.hintImage.mediaObjectId);
-    else
-        waypoint.hintImage = null;
-
-    
-    
-    if(content.length > 0) {
-        console.log("Waypoint media found!");
-        console.log("Waypoint media to retrieve: "+ JSON.stringify(content));
-        var options = {
-            port:443,
-            strictSSL:false,
-            timeout: 2000
-        };
-
-        async.each(content, function(mediaObjectId, callback) {
-                request.get(process.env.MEDIAHAVEN_HOST+process.env.MEDIAHAVEN_PATH+'/'+mediaObjectId, options, function(err, message, media) {
-                    var mediaJSON;
-                    try{
-                        mediaJSON = JSON.parse(media);
-                    }
-                    catch(err) {
-                        mediaJSON = null;
-                    }
-                    if(waypoint.content.image && waypoint.content.image.mediaObjectId === mediaJSON.mediaObjectId) {
-                        waypoint.content.image.url = mediaJSON.previewImagePath;
-                        waypoint.content.image.videoPath = mediaJSON.videoPath;
-                        return callback();
-                    }
-                    if(waypoint.content.audio && waypoint.content.audio.mediaObjectId === mediaJSON.mediaObjectId) {
-                        waypoint.content.audio.url = mediaJSON.previewImagePath;
-                        waypoint.content.audio.videoPath = mediaJSON.videoPath;
-                        return callback();
-                    }
-                    if(waypoint.content.video && waypoint.content.video.mediaObjectId === mediaJSON.mediaObjectId) {
-                        waypoint.content.video.url = mediaJSON.previewImagePath;
-                        waypoint.content.video.videoPath = mediaJSON.videoPath;
-                        return callback();
-                    }
-                    if(waypoint.hintImage && waypoint.hintImage.mediaObjectId === mediaJSON.mediaObjectId) {
-                        waypoint.hintImage.url = mediaJSON.previewImagePath;
-                        waypoint.hintImage.videoPath = mediaJSON.videoPath;
-                        return callback();
-                    }
-                    return callback();
-                }).auth(process.env.MEDIAHAVEN_USERNAME, process.env.MEDIAHAVEN_PW);
-            }, 
-            function(err) {
-                return cb(waypoint);
-        });
-        
-    } else {
-        console.log("No waypoint media!");
-        return cb();
-    }
-};
 
 
 //****************RELATIONSHIPS****************//

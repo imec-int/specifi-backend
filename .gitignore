@@ -19,8 +19,8 @@ logs
 results
 env-vars
 
-/env
-/node_modules
+/node_modules/*
+!/node_modules/keystone
 
 npm-debug.log
 public/components

@@ -1,0 +1,16 @@
+extends ../layouts/auth
+block content
+	h1.sr-only=t("register.REGISTER_TITLE", {appName:t("APP_NAME")})
+	.auth-box
+		.auth-box-brand
+			if Array.isArray(logo)
+				a(href='/').auth-box-logo: img(src=logo[0], width=logo[1], height=logo[2], alt=brand)
+			else if logo
+				a(href='/').auth-box-logo: img(src=logo, alt=brand)
+			else
+				a(href='/').auth-box-logo: img(src='/keystone/images/logo.png', width=205, height=68, alt=brand)
+		div(style="width:100%; padding-top: 20px").auth-box-col
+			a(style="height:80px; width:100%; padding-top:32px;", href='/registrationform').btn.btn-primary=t('register.REGISTER')
+			div(style="width:100%; padding-top: 20px; text-align: center")
+				a(href='/signin').forgot-link= t("signin.ACCOUNT_ALREADY_SIGN_IN")
+

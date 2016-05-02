@@ -1,0 +1,62 @@
+extends ../layouts/auth
+block content
+	h1.sr-only=t("register.REGISTER_TITLE", {appName:t("APP_NAME")})
+	.auth-box
+		.auth-box-col
+			.auth-box-brand
+				if Array.isArray(logo)
+					a(href='/').auth-box-logo: img(src=logo[0], width=logo[1], height=logo[2], alt=brand)
+				else if logo
+					a(href='/').auth-box-logo: img(src=logo, alt=brand)
+				else
+					a(href='/').auth-box-logo: img(src='/keystone/images/logo.png', width=205, height=68, alt=brand)
+		.auth-box-col
+			form(method="post", novalidate).auth-form
+				input(type='hidden', name=csrf_token_key, value=csrf_token_value)
+				input(type='hidden', name='action', value='register')
+				.form-group
+					label(for='username')= t("user.USERNAME")
+					input(name='username', id='username', value=user.username, required=true).form-control
+				.form-group
+					label(for='firstname')= t("user.FIRSTNAME")
+					input(name='firstname', id='firstname', value=user.name.first, required=true).form-control
+				.form-group
+					label(for='surname')= t("user.SURNAME")
+					input(name='surname', id='surname', value=user.name.last, required=true).form-control
+				.form-group
+					label(for='email')= t("EMAIL")
+					input(type='email', name='email', id='email', value=user.email, required=true).form-control
+				.form-group
+					label(for='password')= t("PASSWORD")
+					input(type='password', name='password', id='password', value=user.password, required=true).form-control
+				.form-group
+					.checkbox
+						label
+							input(id="privacyAndTerms", name="privacyAndTerms", type="checkbox", value=false, required=true)
+							=t('register.PRIVACY')
+					.checkbox
+						label
+							input(id="contactProjects", name="contactProjects", type="checkbox", value=false)
+							=t('register.PROJECTS')
+					.checkbox
+						label
+							input(id="contactSurveys", name="contactSurveys", type="checkbox", value=false)
+							=t('register.SURVEYS')
+				.form-group
+					button(type='submit').btn.btn-primary= t("register.REGISTER")
+					a(href='/').forgot-link= t("CANCEL")
+
+
+block js
+	if messages && messages.error.length
+		script setTimeout(function() { try { document.getElementById('username').focus(); } catch(e) {}; }, 800);
+	else
+		script try { document.getElementById('username').focus(); } catch(e) {};
+	script.
+		$("input[type='checkbox']").change(function () {
+			if (this.checked) {
+				$(this).val(true);
+			} else {
+				$(this).val(false);
+			}
+		});

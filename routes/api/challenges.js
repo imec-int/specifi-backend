@@ -27,15 +27,9 @@ exports.list = function(req, res) {
                     return false;
                 }
             });
-            async.each(challenges, function(challenge, cb) {
-                challenge.getMediaHavenUrls(function(challenge) {
-                    cb();
-                });
-            }, function(err) {
-                return res.apiResponse({
-                    challenges: challenges
-                });
-            });
+			return res.apiResponse({
+				challenges: challenges
+			});
         });
     });
 }
@@ -49,13 +43,9 @@ exports.get = function(req, res) {
         console.log("Challenge found!");
         if(err) return res.apiError('1000', i18n.t('1000'));
         if(!challenge) return res.apiError('1021', i18n.t('1021'));
-        console.log("Get Challenge media!");
-        challenge.getMediaHavenUrls(function(challenge){
-            console.log("Challenge media retrieved!");
-            return res.apiResponse({
-                challenge: challenge
-            });
-        });
+		return res.apiResponse({
+			challenge: challenge
+		});
     });
 }
 
@@ -89,15 +79,9 @@ exports.getNearby = function(req, res) {
                     return false;
                 }
             });
-            async.each(challenges, function (challenge, cb) {
-                challenge.getMediaHavenUrls(function (challenge) {
-                    cb();
-                });
-            }, function (err) {
-                return res.apiResponse({
-                    challenges: challenges
-                });
-            });
+			return res.apiResponse({
+				challenges: challenges
+			});
         });
         
     });

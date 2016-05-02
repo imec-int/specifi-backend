@@ -1,5 +1,6 @@
 var keystone = require('keystone'),
-    async = require('async');
+    async = require('async'),
+	_ = require('underscore');
 var Waypoint = keystone.list('Waypoint');
 var UserGeneratedContent = keystone.list('UserGeneratedContent'),
     UserGeneratedContentRating = keystone.list('UserGeneratedContentRating'),
@@ -8,28 +9,18 @@ var i18n = require('i18next'),
     logUtils = require('../../lib/util/log-utils');
 
 /*
- * Gets last uploaded (and processed on MediaHaven) 
+ * Gets last uploaded 
  * */
 exports.getLastUGCForWP = function(req, res) {
     UserGeneratedContent.model.find({waypoint: req.params.wpid, challenge: req.params.challengeid, user: {'$ne': req.user._id }}).populate('user challenge userchallenge waypoint').sort({createdAt: 'desc'}).exec(function(err, ugcList) {
         if(err) return res.apiError('1000', i18n.t('1000'));
         if(!ugcList) return res.apiResponse({ ugc: null });
         
-        async.detectSeries(ugcList, function(ugc, cb) {
-            ugc.getMediaHavenUrls(function(item) {
-                if((item.contentText && item.contentText !=='' )|| (item.content && item.content.url !=='' && item.content.url !== undefined)) {
-                    return cb(true);
-                }
-                else {
-                    cb(false);
-                }
-            });
-        }, function(result) {
-            if(result === undefined) { return res.apiResponse({ ugc: null }); }
-            return res.apiResponse({
-                ugc: result
-            });
-        });
+        var result = _.first(ugcList);
+		if(result === undefined) { return res.apiResponse({ ugc: null }); }
+		return res.apiResponse({
+			ugc: result
+		});
     });
 }
 
